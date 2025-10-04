@@ -81,7 +81,7 @@ body {
 /* Earth Weather Background */
 .weather-section[data-bg="earth"]::before {
     background: 
-        linear-gradient(135deg, rgba(0, 122, 255, 0.4) 0%, rgba(0, 180, 255, 0.35) 50%, rgba(0, 199, 190, 0.3) 100%),
+        linear-gradient(135deg, rgba(0, 80, 180, 0.45) 0%, rgba(0, 100, 160, 0.4) 50%, rgba(0, 120, 140, 0.35) 100%),
         url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=2000') center/cover no-repeat;
     animation: slowPan 60s ease-in-out infinite alternate;
 }
@@ -267,14 +267,15 @@ body {
     margin: 0 auto var(--spacing-xl);
     padding: var(--spacing-md);
     transition: all var(--transition-normal);
-    border: 2px solid rgba(0, 122, 255, 0.3);
-    box-shadow: 0 4px 20px rgba(0, 122, 255, 0.15), 0 0 40px rgba(0, 180, 255, 0.1);
+    border: 2px solid rgba(0, 150, 255, 0.4);
+    box-shadow: 0 4px 24px rgba(0, 150, 255, 0.25), 0 0 50px rgba(0, 180, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: rgba(0, 100, 200, 0.08);
 }
 
 .search-container:hover {
-    background: rgba(0, 122, 255, 0.12);
-    border-color: rgba(0, 122, 255, 0.5);
-    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.3), 0 0 60px rgba(0, 180, 255, 0.2);
+    background: rgba(0, 120, 220, 0.15);
+    border-color: rgba(0, 180, 255, 0.6);
+    box-shadow: 0 8px 40px rgba(0, 150, 255, 0.4), 0 0 80px rgba(0, 200, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
 }
 
