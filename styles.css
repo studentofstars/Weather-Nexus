@@ -239,6 +239,7 @@ body {
 .section-header {
     text-align: center;
     margin-bottom: var(--spacing-xl);
+    padding-top: 60px; /* Add space for the clock above */
 }
 
 .section-title {
