@@ -5,13 +5,8 @@
 // SECURE: API endpoints now point to our serverless functions
 // which keep API keys hidden on the server side
 const API_CONFIG = {
-    // Vercel serverless function URL (update this after deploying to Vercel)
-    // For local development, use: http://localhost:3000/api
-    // For production, use: https://your-vercel-app.vercel.app/api
-    apiBaseUrl: 'https://your-vercel-app.vercel.app/api', // UPDATE THIS!
-    
-    // For local testing with Vercel CLI (vercel dev):
-    // apiBaseUrl: 'http://localhost:3000/api',
+    // Vercel serverless function URL
+    apiBaseUrl: 'https://weather-monitor-rho.vercel.app/api',
 };
 
 // Popular cities for suggestions
