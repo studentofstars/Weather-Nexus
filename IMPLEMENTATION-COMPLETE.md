@@ -65,9 +65,8 @@ vercel --prod
 ```
 
 **Important:** Add environment variables in Vercel Dashboard:
-- `OPENWEATHER_API_KEY` = `256156d28a4575e841a3cce2fdfc060b`
-- `NASA_API_KEY` = `ywP6emzUoRjqkUgCzIdssXwpDcivxxnNre9vnIi2`
-
+- `OPENWEATHER_API_KEY` = `apikey`
+- `NASA_API_KEY` = `api_key`
 ### Step 3: Update app.js
 
 Edit line ~11 in `app.js`:
