@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Nexus - Earth & Space Weather</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-content">
+            <div class="logo">
+                <span class="logo-icon">🌍</span>
+                <span class="logo-text">Weather Nexus</span>
+            </div>
+            <div class="nav-links">
+                <a href="#earth" class="nav-link active" data-section="earth">Earth Weather</a>
+                <a href="#space" class="nav-link" data-section="space">Space Weather</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Earth Weather Section -->
+        <section id="earth" class="weather-section active" data-bg="earth">
+            <div class="background-overlay"></div>
+            
+            <!-- Real-time Clock -->
+            <div class="live-clock">
+                <span class="clock-icon"></span>
+                <span id="live-time">00:00:00</span>
+            </div>
+            
+            <!-- Refresh Indicator -->
+            <div class="refresh-indicator" id="earth-refresh">
+                <span>⟳ Data refreshed</span>
+            </div>
+            
+            <div class="content-wrapper">
+                <div class="section-header fade-in">
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                        <div>
+                            <h1 class="section-title">Earth Weather</h1>
+                            <p class="section-subtitle">Real-time atmospheric conditions from around the globe</p>
+                        </div>
+                        <button class="about-btn" id="about-earth-btn" title="About Earth Weather">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            About
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="search-container glass-card fade-in">
+                    <div class="search-wrapper" style="position: relative;">
+                        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        <input type="text" id="city-input" class="search-input" placeholder="Enter city name..." value="London">
+                        <button id="search-btn" class="search-btn">
+                            <span>Search</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Search Suggestions Dropdown -->
+                        <div class="search-suggestions" id="search-suggestions"></div>
+                    </div>
+                    
+                    <!-- Quick City Actions -->
+                    <div class="quick-actions" id="quick-cities">
+                        <button class="quick-action-btn" data-city="Delhi">Delhi</button>
+                        <button class="quick-action-btn" data-city="Mumbai">Mumbai</button>
+                        <button class="quick-action-btn" data-city="Bengaluru"> Bengaluru</button>
+                        <button class="quick-action-btn" data-city="Bhubaneshwar"> Bhubaneshwar</button>
+                        <button class="quick-action-btn" data-city="Kolkata"> Kolkata</button>
+                    </div>
+                </div>
+
+                <!-- Weather Data Display -->
+                <div id="earth-weather-data" class="weather-data hidden">
+                    <!-- Location Info -->
+                    <div class="location-card glass-card slide-up">
+                        <div class="location-header">
+                            <div>
+                                <h2 id="location-name" class="location-name">London</h2>
+                                <p id="location-country" class="location-country">United Kingdom</p>
+                            </div>
+                            <div id="weather-icon" class="weather-icon-large">☀️</div>
+                        </div>
+                        <div id="weather-description" class="weather-description">Clear Sky</div>
+                    </div>
+
+                    <!-- Main Metrics -->
+                    <div class="metrics-grid">
+                        <div class="metric-card glass-card slide-up" style="animation-delay: 0.1s">
+                            <div class="metric-icon">🌡️</div>
+                            <div class="metric-content">
+                                <p class="metric-label">Temperature</p>
+                                <p id="temperature" class="metric-value">--°C</p>
+                                <p id="feels-like" class="metric-detail">Feels like --°C</p>
+                            </div>
+                        </div>
+
+                        <div class="metric-card glass-card slide-up" style="animation-delay: 0.2s">
+                            <div class="metric-icon">💧</div>
+                            <div class="metric-content">
+                                <p class="metric-label">Humidity</p>
+                                <p id="humidity" class="metric-value">--%</p>
+                                <p class="metric-detail">Moisture level</p>
+                            </div>
+                        </div>
+
+                        <div class="metric-card glass-card slide-up" style="animation-delay: 0.3s">
+                            <div class="metric-icon">💨</div>
+                            <div class="metric-content">
+                                <p class="metric-label">Wind Speed</p>
+                                <p id="wind-speed" class="metric-value">-- m/s</p>
+                                <p class="metric-detail">Wind conditions</p>
+                            </div>
+                        </div>
+
+                        <div class="metric-card glass-card slide-up" style="animation-delay: 0.4s">
+                            <div class="metric-icon">🔽</div>
+                            <div class="metric-content">
+                                <p class="metric-label">Pressure</p>
+                                <p id="pressure" class="metric-value">-- hPa</p>
+                                <p class="metric-detail">Atmospheric</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Temperature Trend Chart -->
+                    <div class="chart-container glass-card slide-up" style="animation-delay: 0.5s">
+                        <h3 class="chart-title">Temperature Trends</h3>
+                        <canvas id="temp-chart"></canvas>
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="info-grid">
+                        <div class="info-card glass-card slide-up" style="animation-delay: 0.5s">
+                            <div class="info-row">
+                                <span class="info-label">Visibility</span>
+                                <span id="visibility" class="info-value">-- km</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Cloudiness</span>
+                                <span id="cloudiness" class="info-value">--%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Insights -->
+                    <div id="earth-insights" class="insights-card glass-card slide-up" style="animation-delay: 0.6s">
+                        <h3 class="insights-title">Weather Insights</h3>
+                        <div id="insights-list" class="insights-list">
+                            <!-- Insights will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="earth-loading" class="loading-state hidden">
+                    <div class="loader"></div>
+                    <p>Fetching weather data...</p>
+                </div>
+
+                <!-- Error State -->
+                <div id="earth-error" class="error-state hidden">
+                    <div class="error-icon">⚠️</div>
+                    <p id="earth-error-message">Unable to fetch weather data</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Space Weather Section -->
+        <section id="space" class="weather-section" data-bg="space">
+            <div class="background-overlay"></div>
+            
+            <!-- Real-time Clock -->
+            <div class="live-clock">
+                <span class="clock-icon">🕐</span>
+                <span id="live-time-space">00:00:00</span>
+            </div>
+            
+            <!-- Refresh Indicator -->
+            <div class="refresh-indicator" id="space-refresh">
+                <span>⟳ Data refreshed</span>
+            </div>
+            
+            <div class="content-wrapper">
+                <div class="section-header fade-in">
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                        <div>
+                            <h1 class="section-title">Space Weather</h1>
+                            <p class="section-subtitle">Solar activity and space weather events</p>
+                        </div>
+                        <button class="about-btn" id="about-space-btn" title="About Space Weather">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            About
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Control Panel -->
+                <div class="control-panel glass-card fade-in">
+                    <div class="control-row">
+                        <label for="days-select" class="control-label">Data Range:</label>
+                        <select id="days-select" class="control-select">
+                            <option value="7">Last 7 days</option>
+                            <option value="15">Last 15 days</option>
+                            <option value="30" selected>Last 30 days</option>
+                        </select>
+                        <button id="fetch-space-btn" class="fetch-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                            </svg>
+                            <span>Fetch Data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Space Weather Data -->
+                <div id="space-weather-data" class="weather-data hidden">
+                    <!-- Event Summary -->
+                    <div class="summary-grid">
+                        <div class="summary-card glass-card slide-up">
+                            <div class="summary-icon">⚡</div>
+                            <div class="summary-content">
+                                <p class="summary-label">Solar Flares</p>
+                                <p id="flare-count" class="summary-value">0</p>
+                            </div>
+                        </div>
+
+                        <div class="summary-card glass-card slide-up" style="animation-delay: 0.1s">
+                            <div class="summary-icon">💥</div>
+                            <div class="summary-content">
+                                <p class="summary-label">CME Events</p>
+                                <p id="cme-count" class="summary-value">0</p>
+                            </div>
+                        </div>
+
+                        <div class="summary-card glass-card slide-up" style="animation-delay: 0.2s">
+                            <div class="summary-icon">🌐</div>
+                            <div class="summary-content">
+                                <p class="summary-label">Geomagnetic Storms</p>
+                                <p id="gst-count" class="summary-value">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Space Weather Insights -->
+                    <div id="space-insights" class="insights-card glass-card slide-up" style="animation-delay: 0.3s">
+                        <h3 class="insights-title"> Space Weather Analysis</h3>
+                        <div id="space-insights-list" class="insights-list">
+                            <!-- Insights will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Space Weather Activity Chart -->
+                    <div class="chart-container glass-card slide-up" style="animation-delay: 0.35s">
+                        <h3 class="chart-title"> Space Weather Activity Timeline</h3>
+                        <canvas id="space-chart"></canvas>
+                    </div>
+
+                    <!-- Recent Events -->
+                    <div class="events-container glass-card slide-up" style="animation-delay: 0.4s">
+                        <h3 class="events-title"> Recent Events</h3>
+                        <div id="events-list" class="events-list">
+                            <!-- Events will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Impact Information -->
+                    <div class="impact-card glass-card slide-up" style="animation-delay: 0.5s">
+                        <h3 class="impact-title">⚠️ Space Weather Impacts</h3>
+                        <div class="impact-grid">
+                            <div class="impact-item">
+                                <div class="impact-header">
+                                    <span class="impact-icon">⚡</span>
+                                    <h4>Solar Flares</h4>
+                                </div>
+                                <ul class="impact-list">
+                                    <li>Disrupt radio communications</li>
+                                    <li>Affect GPS accuracy</li>
+                                    <li>Impact satellite operations</li>
+                                </ul>
+                            </div>
+
+                            <div class="impact-item">
+                                <div class="impact-header">
+                                    <span class="impact-icon">💥</span>
+                                    <h4>CME Events</h4>
+                                </div>
+                                <ul class="impact-list">
+                                    <li>Cause geomagnetic storms</li>
+                                    <li>May damage satellites</li>
+                                    <li>Create beautiful auroras</li>
+                                </ul>
+                            </div>
+
+                            <div class="impact-item">
+                                <div class="impact-header">
+                                    <span class="impact-icon">🌐</span>
+                                    <h4>Geomagnetic Storms</h4>
+                                </div>
+                                <ul class="impact-list">
+                                    <li>Disrupt power grids</li>
+                                    <li>Enhance aurora displays</li>
+                                    <li>Impact GPS systems</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="space-loading" class="loading-state hidden">
+                    <div class="loader"></div>
+                    <p>Fetching space weather data...</p>
+                </div>
+
+                <!-- Error State -->
+                <div id="space-error" class="error-state hidden">
+                    <div class="error-icon">⚠️</div>
+                    <p id="space-error-message">Unable to fetch space weather data</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer glass-card">
+        <div class="footer-content">
+            <p class="footer-text">
+                <span>🌍 Earth Weather powered by OpenWeatherMap</span>
+                <span class="divider">•</span>
+                <span>☀️ Space Weather powered by NASA DONKI</span>
+            </p>
+            <button class="help-btn" id="helpBtn" title="Keyboard Shortcuts">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                Help
+            </button>
+            <!--<p class="footer-subtext">Built with ❤️ for space and weather enthusiasts</p>-->
+        </div>
+    </footer>
+    
+    <!-- Keyboard Shortcuts Overlay -->
+    <div class="shortcuts-overlay" id="shortcutsOverlay">
+        <div class="shortcuts-modal">
+            <div class="shortcuts-header">
+                <h3>Keyboard Shortcuts</h3>
+                <button class="close-shortcuts" id="closeShortcuts">&times;</button>
+            </div>
+            <div class="shortcuts-body">
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>K</kbd>
+                    <span>Focus search bar</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>R</kbd>
+                    <span>Refresh current section</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>1</kbd>
+                    <span>Switch to Earth Weather</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>2</kbd>
+                    <span>Switch to Space Weather</span>
+                </div>
+                <div class="shortcut-item">
+                    <span style="font-size: 14px;">Double-click</span>
+                    <span>Copy metric value</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Enter</kbd>
+                    <span>Search for city</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Earth Weather Modal -->
+    <div class="about-overlay" id="aboutEarthOverlay">
+        <div class="about-modal">
+            <div class="about-header">
+                <h3>About Earth Weather</h3>
+                <button class="close-about" id="closeAboutEarth">&times;</button>
+            </div>
+            <div class="about-body">
+                <div class="about-section">
+                    <h4>What is Earth Weather?</h4>
+                    <p>Earth weather refers to the atmospheric conditions in the lower layer of Earth's atmosphere (troposphere), including temperature, humidity, precipitation, wind, and pressure patterns that affect our daily lives.</p>
+                </div>
+                
+                <div class="about-section">
+                    <h4>Importance</h4>
+                    <ul>
+                        <li><strong>Daily Planning:</strong> Helps plan activities, travel, and outdoor events</li>
+                        <li><strong>Agriculture:</strong> Critical for crop planning, irrigation, and harvesting</li>
+                        <li><strong>Aviation & Maritime:</strong> Essential for safe navigation and operations</li>
+                        <li><strong>Disaster Preparedness:</strong> Early warnings for severe weather events</li>
+                        <li><strong>Health:</strong> Affects air quality, allergies, and disease spread</li>
+                        <li><strong>Energy:</strong> Impacts heating, cooling, and renewable energy generation</li>
+                    </ul>
+                </div>
+                
+                <div class="about-section">
+                    <h4>Technical Aspects</h4>
+                    <ul>
+                        <li><strong>Data Source:</strong> OpenWeatherMap API v2.5</li>
+                        <li><strong>Update Frequency:</strong> Real-time data updated every 10 minutes</li>
+                        <li><strong>Coverage:</strong> 200,000+ cities worldwide</li>
+                        <li><strong>Parameters Measured:</strong>
+                            <ul style="margin-top: 8px;">
+                                <li>Temperature (°C/°F) & Feels Like</li>
+                                <li>Humidity (%) & Pressure (hPa)</li>
+                                <li>Wind Speed (km/h) & Direction</li>
+                                <li>Visibility (km) & Cloud Cover (%)</li>
+                                <li>Weather Conditions & Descriptions</li>
+                            </ul>
+                        </li>
+                        <li><strong>Forecasting:</strong> 5-day temperature trends with Chart.js visualization</li>
+                        <li><strong>Accuracy:</strong> ±1-2°C temperature, ±10% humidity</li>
+                    </ul>
+                </div>
+                
+                <div class="about-section">
+                    <h4>How It Works</h4>
+                    <ol>
+                        <li><strong>Data Collection:</strong> Weather stations, satellites, radars, and ocean buoys collect atmospheric data</li>
+                        <li><strong>Processing:</strong> Supercomputers process millions of data points using numerical weather prediction models</li>
+                        <li><strong>Analysis:</strong> Meteorologists analyze patterns and make forecasts</li>
+                        <li><strong>Distribution:</strong> Data is distributed via APIs for applications like this one</li>
+                    </ol>
+                </div>
+                
+                <div class="about-section">
+                    <h4>Indian Cities Focus</h4>
+                    <p>This application prioritizes major Indian cities:</p>
+                    <ul>
+                        <li><strong>Delhi:</strong> National capital, extreme temperature variations</li>
+                        <li><strong>Mumbai:</strong> Coastal climate, monsoon impact</li>
+                        <li><strong>Bengaluru:</strong> Pleasant climate, tech hub</li>
+                        <li><strong>Bhubaneshwar:</strong> Tropical wet climate, cyclone-prone</li>
+                        <li><strong>Kolkata:</strong> Humid subtropical, monsoon patterns</li>
+                    </ul>
+                </div>
+                
+                <div class="about-section">
+                    <h4>Fun Facts</h4>
+                    <ul>
+                        <li>🌡️ Earth's hottest recorded temperature: 56.7°C (Death Valley, 1913)</li>
+                        <li>❄️ Coldest temperature: -89.2°C (Antarctica, 1983)</li>
+                        <li>🌪️ Wind speeds in tornadoes can exceed 480 km/h</li>
+                        <li>☔ Mawsynram, India receives 11,871mm rain annually (world's wettest place)</li>
+                        <li>⚡ Earth experiences ~100 lightning strikes per second</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Space Weather Modal -->
+    <div class="about-overlay" id="aboutSpaceOverlay">
+        <div class="about-modal">
+            <div class="about-header">
+                <h3>About Space Weather</h3>
+                <button class="close-about" id="closeAboutSpace">&times;</button>
+            </div>
+            <div class="about-body">
+                <div class="about-section">
+                    <h4>What is Space Weather?</h4>
+                    <p>Space weather refers to conditions on the Sun and in the solar wind, magnetosphere, ionosphere, and thermosphere that can influence the performance of space-borne and ground-based technological systems and endanger human life or health.</p>
+                </div>
+                
+                <div class="about-section">
+                    <h4>Importance</h4>
+                    <ul>
+                        <li><strong>Satellite Operations:</strong> Protects billions of dollars in space assets</li>
+                        <li><strong>Communications:</strong> Radio, GPS, and satellite communications can be disrupted</li>
+                        <li><strong>Power Grids:</strong> Geomagnetic storms can damage transformers and cause blackouts</li>
+                        <li><strong>Aviation:</strong> Radiation exposure at high altitudes, especially polar routes</li>
+                        <li><strong>Astronaut Safety:</strong> Radiation hazards for spacewalks and missions</li>
+                        <li><strong>Technology:</strong> Affects pipelines, railways, and sensitive electronics</li>
+                    </ul>
+                </div>
+                
+                <div class="about-section">
+                    <h4>Technical Aspects</h4>
+                    <ul>
+                        <li><strong>Data Source:</strong> NASA DONKI (Database Of Notifications, Knowledge, Information)</li>
+                        <li><strong>Update Frequency:</strong> Real-time monitoring, events logged continuously</li>
+                        <li><strong>Event Types Tracked:</strong>
+                            <ul style="margin-top: 8px;">
+                                <li><strong>Solar Flares (FLR):</strong> Intense bursts of radiation</li>
+                                <li><strong>Coronal Mass Ejections (CME):</strong> Massive plasma eruptions</li>
+                                <li><strong>Geomagnetic Storms (GST):</strong> Disturbances in Earth's magnetosphere</li>
+                            </ul>
+                        </li>
+                        <li><strong>Classification:</strong> Events rated from minor (G1/S1/R1) to extreme (G5/S5/R5)</li>
+                        <li><strong>Forecasting:</strong> 1-3 day advance warnings for major events</li>
+                        <li><strong>Monitoring:</strong> 24/7 surveillance by multiple satellites and ground stations</li>
+                    </ul>
+                </div>
+                
+                <div class="about-section">
+                    <h4>How It Works</h4>
+                    <ol>
+                        <li><strong>Solar Observation:</strong> Satellites like SDO and SOHO monitor the Sun constantly</li>
+                        <li><strong>Event Detection:</strong> Instruments detect flares, CMEs, and other phenomena</li>
+                        <li><strong>Analysis:</strong> Scientists analyze event characteristics and predict Earth impact</li>
+                        <li><strong>Forecasting:</strong> Models predict arrival time and intensity at Earth</li>
+                        <li><strong>Alerts:</strong> Warnings issued to affected sectors (aviation, power, etc.)</li>
+                    </ol>
+                </div>
+                
+                <div class="about-section">
+                    <h4>Solar Cycle</h4>
+                    <ul>
+                        <li><strong>Duration:</strong> Approximately 11 years from minimum to maximum activity</li>
+                        <li><strong>Current Cycle:</strong> Solar Cycle 25 (began December 2019)</li>
+                        <li><strong>Peak Expected:</strong> 2024-2025 (we're in active phase!)</li>
+                        <li><strong>Sunspots:</strong> Dark regions on Sun's surface, indicators of activity</li>
+                        <li><strong>Solar Maximum:</strong> Peak activity with frequent flares and CMEs</li>
+                    </ul>
+                </div>
+                
+                <div class="about-section">
+                    <h4>Beautiful Side Effects</h4>
+                    <ul>
+                        <li><strong>Auroras (Northern/Southern Lights):</strong> Created when solar particles interact with Earth's magnetic field and atmosphere</li>
+                        <li><strong>Visibility:</strong> During strong geomagnetic storms, auroras visible at lower latitudes</li>
+                        <li><strong>Colors:</strong> Green (oxygen), red (high-altitude oxygen), blue/purple (nitrogen)</li>
+                        <li><strong>India Sightings:</strong> Rare but possible during extreme G5 storms in northern regions</li>
+                    </ul>
+                </div>
+                
+                <div class="about-section">
+                    <h4>Amazing Facts</h4>
+                    <ul>
+                        <li>☀️ Sun's surface temperature: 5,500°C; Core: 15 million°C</li>
+                        <li>⚡ Largest flare recorded: X28 class (November 2003)</li>
+                        <li>🌊 CMEs can eject billions of tons of solar material at millions of km/h</li>
+                        <li>🛰️ 1989 Quebec blackout: 6 million people without power for 9 hours</li>
+                        <li>🔴 Carrington Event (1859): Most powerful geomagnetic storm in recorded history</li>
+                        <li>📡 Space weather can delay GPS signals by microseconds, affecting accuracy</li>
+                    </ul>
+                </div>
+                
+                <div class="about-section">
+                    <h4>Blue Theme Design</h4>
+                    <p>The blue color scheme represents:</p>
+                    <ul>
+                        <li>🔵 <strong>Space & Sky:</strong> Infinite depths of space</li>
+                        <li>🌊 <strong>Calm & Trust:</strong> Professional scientific monitoring</li>
+                        <li>❄️ <strong>Cool Temperatures:</strong> Contrast to Sun's heat</li>
+                        <li>🌐 <strong>Earth's Atmosphere:</strong> Protective shield from space weather</li>
+                    </ul>
+                    <p style="margin-top: 8px; font-style: italic;">Background image: ESA's "Low Sun on the Horizon" - showcasing our Sun from space.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
