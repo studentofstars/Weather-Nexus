@@ -842,40 +842,38 @@ body {
     }
 }
 
-/* About Button */
-.about-btn {
-    position: absolute;
-    top: 70px;
-    right: var(--spacing-md);
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    border-radius: 12px;
-    padding: 10px 18px;
-    color: rgba(255, 255, 255, 1);
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
+/* Info Button (superscript style) */
+.info-btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    margin-left: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
     transition: all 0.3s ease;
-    white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 1s ease;
+    vertical-align: super;
+    position: relative;
+    top: -8px;
 }
 
-.about-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 122, 255, 0.5);
-    border-color: rgba(255, 255, 255, 0.6);
+.info-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
 }
 
-.about-btn svg {
-    width: 22px;
-    height: 22px;
-    stroke-width: 2;
-    filter: drop-shadow(0 1px 3px rgba(255, 255, 255, 0.6));
+.info-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 /* About Modal Overlay */
@@ -1559,15 +1557,15 @@ canvas {
         gap: 12px;
     }
     
-    .about-btn {
-        align-self: flex-end;
-        padding: 8px 14px;
-        font-size: 13px;
+    .info-btn {
+        width: 24px;
+        height: 24px;
+        top: -6px;
     }
     
-    .about-btn svg {
-        width: 14px;
-        height: 14px;
+    .info-btn svg {
+        width: 16px;
+        height: 16px;
     }
     
     /* About modal for mobile */
@@ -1632,10 +1630,12 @@ canvas {
         font-size: 20px;
     }
     
-    /* About elements for extra small screens */
-    .about-btn {
-        padding: 6px 12px;
-        font-size: 12px;
+    /* Info button for extra small screens */
+    .info-btn {
+        width: 22px;
+        height: 22px;
+        top: -5px;
+        margin-left: 8px;
     }
     
     .about-modal {
