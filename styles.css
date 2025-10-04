@@ -81,8 +81,8 @@ body {
 /* Earth Weather Background */
 .weather-section[data-bg="earth"]::before {
     background: 
-        linear-gradient(135deg, rgba(0, 80, 180, 0.45) 0%, rgba(0, 100, 160, 0.4) 50%, rgba(0, 120, 140, 0.35) 100%),
-        url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=2000') center/cover no-repeat;
+        linear-gradient(135deg, rgba(10, 40, 80, 0.5) 0%, rgba(20, 60, 100, 0.45) 50%, rgba(30, 80, 120, 0.4) 100%),
+        url('https://cdn.mos.cms.futurecdn.net/PoeiEn6JoDZSxjhFnUErbD-1200-80.jpeg') center/cover no-repeat;
     animation: slowPan 60s ease-in-out infinite alternate;
 }
 
@@ -267,15 +267,15 @@ body {
     margin: 0 auto var(--spacing-xl);
     padding: var(--spacing-md);
     transition: all var(--transition-normal);
-    border: 2px solid rgba(0, 150, 255, 0.4);
-    box-shadow: 0 4px 24px rgba(0, 150, 255, 0.25), 0 0 50px rgba(0, 180, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    background: rgba(0, 100, 200, 0.08);
+    border: 2px solid rgba(100, 180, 255, 0.4);
+    box-shadow: 0 4px 24px rgba(80, 160, 240, 0.25), 0 0 50px rgba(100, 180, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: rgba(40, 80, 140, 0.12);
 }
 
 .search-container:hover {
-    background: rgba(0, 120, 220, 0.15);
-    border-color: rgba(0, 180, 255, 0.6);
-    box-shadow: 0 8px 40px rgba(0, 150, 255, 0.4), 0 0 80px rgba(0, 200, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background: rgba(50, 100, 160, 0.18);
+    border-color: rgba(120, 200, 255, 0.6);
+    box-shadow: 0 8px 40px rgba(100, 180, 240, 0.4), 0 0 80px rgba(120, 200, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
 }
 
