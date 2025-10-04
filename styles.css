@@ -844,6 +844,9 @@ body {
 
 /* About Button */
 .about-btn {
+    position: absolute;
+    top: 70px;
+    right: var(--spacing-md);
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.4);
     border-radius: 12px;
@@ -858,6 +861,7 @@ body {
     transition: all 0.3s ease;
     white-space: nowrap;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s ease;
 }
 
 .about-btn:hover {
