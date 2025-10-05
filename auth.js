@@ -251,6 +251,198 @@ function toggleUserDropdown() {
     userDropdown.classList.toggle('hidden');
 }
 
+// Handle profile click
+function handleProfileClick() {
+    userDropdown.classList.add('hidden');
+    // Show profile modal
+    showProfileModal();
+}
+
+// Handle settings click
+function handleSettingsClick() {
+    userDropdown.classList.add('hidden');
+    // Show settings modal
+    showSettingsModal();
+}
+
+// Show profile modal
+function showProfileModal() {
+    const user = supabase.auth.getUser().then(({ data: { user } }) => {
+        if (!user) return;
+        
+        const profileHTML = `
+            <div class="modal-overlay" id="profile-modal">
+                <div class="auth-modal" style="max-width: 500px;">
+                    <div class="auth-modal-header">
+                        <h2>User Profile</h2>
+                        <button class="close-btn" onclick="closeProfileModal()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="profile-content" style="padding: 30px;">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: inline-flex; align-items: center; justify-content: center; font-size: 32px; color: white; font-weight: bold; margin-bottom: 15px;">
+                                ${(user.user_metadata?.name || user.email).charAt(0).toUpperCase()}
+                            </div>
+                            <h3 style="margin: 0; font-size: 24px;">${user.user_metadata?.name || 'User'}</h3>
+                            <p style="color: #666; margin: 5px 0;">${user.email}</p>
+                        </div>
+                        <div style="background: rgba(102, 126, 234, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: #666;">Account Status:</span>
+                                <span style="color: #10b981; font-weight: 600;">✓ Active</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: #666;">Email Verified:</span>
+                                <span style="color: ${user.email_confirmed_at ? '#10b981' : '#f59e0b'}; font-weight: 600;">
+                                    ${user.email_confirmed_at ? '✓ Yes' : '⚠ Pending'}
+                                </span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: #666;">Member Since:</span>
+                                <span style="font-weight: 600;">${new Date(user.created_at).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                        <button onclick="closeProfileModal()" style="width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 600;">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', profileHTML);
+        document.body.style.overflow = 'hidden';
+    });
+}
+
+// Show settings modal
+function showSettingsModal() {
+    const settingsHTML = `
+        <div class="modal-overlay" id="settings-modal">
+            <div class="auth-modal" style="max-width: 600px;">
+                <div class="auth-modal-header">
+                    <h2>Settings</h2>
+                    <button class="close-btn" onclick="closeSettingsModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="settings-content" style="padding: 30px;">
+                    <h3 style="margin-top: 0; color: #667eea; font-size: 18px; margin-bottom: 20px;">🔔 Notification Settings</h3>
+                    
+                    <div style="background: rgba(102, 126, 234, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <div>
+                                <strong>Email Notifications</strong>
+                                <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Receive weather alerts via email</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="email-notif-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <div>
+                                <strong>Push Notifications</strong>
+                                <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Receive browser notifications</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="push-notif-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>Space Weather Alerts</strong>
+                                <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Solar flares and CME notifications</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="space-notif-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <h3 style="color: #667eea; font-size: 18px; margin-bottom: 20px;">🌍 Preferences</h3>
+                    
+                    <div style="background: rgba(102, 126, 234, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                        <p style="color: #666; margin-bottom: 15px;">More preference options coming soon:</p>
+                        <ul style="color: #666; margin: 0; padding-left: 20px;">
+                            <li>Temperature units (°C / °F)</li>
+                            <li>Wind speed units (m/s / km/h / mph)</li>
+                            <li>Custom weather alert thresholds</li>
+                            <li>Favorite cities management</li>
+                        </ul>
+                    </div>
+                    
+                    <button onclick="saveSettings()" style="width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 600; margin-bottom: 10px;">
+                        Save Settings
+                    </button>
+                    <button onclick="closeSettingsModal()" style="width: 100%; padding: 12px; background: transparent; color: #667eea; border: 2px solid #667eea; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 600;">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', settingsHTML);
+    document.body.style.overflow = 'hidden';
+}
+
+// Close modals
+window.closeProfileModal = function() {
+    const modal = document.getElementById('profile-modal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = '';
+    }
+};
+
+window.closeSettingsModal = function() {
+    const modal = document.getElementById('settings-modal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = '';
+    }
+};
+
+// Save settings
+window.saveSettings = async function() {
+    const emailNotif = document.getElementById('email-notif-toggle').checked;
+    const pushNotif = document.getElementById('push-notif-toggle').checked;
+    const spaceNotif = document.getElementById('space-notif-toggle').checked;
+    
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        
+        const { error } = await supabase
+            .from('user_preferences')
+            .update({
+                notifications_enabled: pushNotif,
+                email_notifications: emailNotif,
+                space_weather_alerts: spaceNotif
+            })
+            .eq('user_id', user.id);
+        
+        if (error) throw error;
+        
+        alert('✅ Settings saved successfully!');
+        closeSettingsModal();
+    } catch (error) {
+        alert('❌ Error saving settings: ' + error.message);
+    }
+};
+
 // Event listeners
 signInBtn.addEventListener('click', openAuthModal);
 authModalClose.addEventListener('click', closeAuthModal);
@@ -270,6 +462,10 @@ loginForm.addEventListener('submit', handleLogin);
 signupForm.addEventListener('submit', handleSignup);
 signOutBtn.addEventListener('click', handleSignOut);
 userAvatarBtn.addEventListener('click', toggleUserDropdown);
+
+// Add Profile and Settings button listeners
+document.getElementById('profile-btn').addEventListener('click', handleProfileClick);
+document.getElementById('settings-btn').addEventListener('click', handleSettingsClick);
 
 // Close dropdown when clicking outside
 document.addEventListener('click', (e) => {
