@@ -334,7 +334,13 @@ function showSettingsModal() {
                     </button>
                 </div>
                 <div class="settings-content" style="padding: 30px;">
-                    <h3 style="margin-top: 0; color: #667eea; font-size: 18px; margin-bottom: 20px;">🔔 Notification Settings</h3>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <h3 style="margin: 0; color: #667eea; font-size: 18px;">Notification Settings</h3>
+                    </div>
                     
                     <div style="background: rgba(102, 126, 234, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -371,7 +377,21 @@ function showSettingsModal() {
                         </div>
                     </div>
                     
-                    <h3 style="color: #667eea; font-size: 18px; margin-bottom: 20px;">🌍 Preferences</h3>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 30px; margin-bottom: 20px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <h3 style="margin: 0; color: #667eea; font-size: 18px;">General Preferences</h3>
+                    </div>
                     
                     <div style="background: rgba(102, 126, 234, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
                         <p style="color: #666; margin-bottom: 15px;">More preference options coming soon:</p>
@@ -425,20 +445,55 @@ window.saveSettings = async function() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
         
-        const { error } = await supabase
+        // Update user_preferences table
+        const { error: prefError } = await supabase
             .from('user_preferences')
             .update({
                 notifications_enabled: pushNotif,
                 email_notifications: emailNotif,
-                space_weather_alerts: spaceNotif
+                push_notifications: pushNotif
             })
             .eq('user_id', user.id);
         
-        if (error) throw error;
+        if (prefError) throw prefError;
+        
+        // Update or create space_weather_alerts entry
+        const { data: existingAlert, error: fetchError } = await supabase
+            .from('space_weather_alerts')
+            .select('*')
+            .eq('user_id', user.id)
+            .single();
+        
+        if (fetchError && fetchError.code !== 'PGRST116') {
+            throw fetchError;
+        }
+        
+        if (existingAlert) {
+            // Update existing
+            const { error: updateError } = await supabase
+                .from('space_weather_alerts')
+                .update({ enabled: spaceNotif })
+                .eq('user_id', user.id);
+            
+            if (updateError) throw updateError;
+        } else {
+            // Create new
+            const { error: insertError } = await supabase
+                .from('space_weather_alerts')
+                .insert({
+                    user_id: user.id,
+                    enabled: spaceNotif,
+                    alert_types: ['FLR', 'CME', 'GST'],
+                    min_severity: 'M'
+                });
+            
+            if (insertError) throw insertError;
+        }
         
         alert('✅ Settings saved successfully!');
         closeSettingsModal();
     } catch (error) {
+        console.error('Save settings error:', error);
         alert('❌ Error saving settings: ' + error.message);
     }
 };
