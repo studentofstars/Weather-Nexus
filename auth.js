@@ -64,6 +64,11 @@ async function updateUIForLoggedInUser() {
     document.getElementById('user-name').textContent = userName;
     document.getElementById('user-initials').textContent = initials;
     
+    // Initialize notifications module
+    if (window.notificationsModule) {
+        window.notificationsModule.init();
+    }
+    
     // Check if user preferences exist, create if not
     try {
         const { data: preferences, error } = await supabase

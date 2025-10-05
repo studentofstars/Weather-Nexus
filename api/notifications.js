@@ -503,10 +503,6 @@ async function markAsRead(req, res) {
   return res.status(200).json({ message: 'Marked as read' });
 }
 
-    note: 'Implement cron job logic here'
-  });
-}
-
 // Email template for weather alerts
 function createEmailTemplate(title, message, weatherData) {
   return `
