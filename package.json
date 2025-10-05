@@ -1,6 +1,7 @@
 {
   "name": "weather-nexus",
   "version": "1.0.0",
+  "type": "module",
   "description": "A sleek weather monitoring website for Earth and Space weather with Apple-inspired glassmorphism UI",
   "main": "index.html",
   "dependencies": {

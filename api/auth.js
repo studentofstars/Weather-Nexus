@@ -3,11 +3,20 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 // Create Supabase admin client (server-side only)
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+let supabaseAdmin;
+try {
+  if (supabaseUrl && supabaseServiceKey) {
+    supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+  } else {
+    console.error('Missing Supabase credentials');
+  }
+} catch (error) {
+  console.error('Failed to initialize Supabase:', error);
+}
 
 // Enable CORS
 const corsHeaders = {
@@ -22,10 +31,25 @@ export default async function handler(req, res) {
     return res.status(200).json({});
   }
 
-  const { method, body } = req;
-  const action = body?.action;
+  // Add CORS headers
+  Object.entries(corsHeaders).forEach(([key, value]) => {
+    res.setHeader(key, value);
+  });
+
+  const { method, body, query } = req;
+  const action = query?.action || body?.action;
 
   try {
+    // Test endpoint
+    if (action === 'test') {
+      return res.status(200).json({ 
+        status: 'ok',
+        message: 'Auth API is ready',
+        supabase: supabaseUrl ? 'connected' : 'not configured',
+        timestamp: new Date().toISOString()
+      });
+    }
+
     switch (action) {
       case 'getProfile':
         return await getProfile(req, res);
@@ -39,7 +63,7 @@ export default async function handler(req, res) {
       default:
         return res.status(400).json({ 
           error: 'Invalid action',
-          validActions: ['getProfile', 'updateProfile', 'deleteAccount']
+          validActions: ['test', 'getProfile', 'updateProfile', 'deleteAccount']
         });
     }
   } catch (error) {
