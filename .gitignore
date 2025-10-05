@@ -57,6 +57,9 @@ yarn-error.log*
 .env.local
 .env.*.local
 
+# Supabase API keys (sensitive)
+Supabase project API keys.txt
+
 # Build outputs
 dist/
 build/
