@@ -165,6 +165,7 @@ async function handleSignup(e) {
     messageEl.classList.add('hidden');
     
     try {
+        // Sign up the user
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
@@ -176,6 +177,28 @@ async function handleSignup(e) {
         });
         
         if (error) throw error;
+        
+        // Create user preferences (if signup successful)
+        if (data.user) {
+            try {
+                // Create default preferences
+                const { error: prefError } = await supabase
+                    .from('user_preferences')
+                    .insert({
+                        user_id: data.user.id,
+                        saved_cities: [],
+                        notifications_enabled: true,
+                        email_notifications: true
+                    });
+                
+                // It's okay if this fails (maybe already exists)
+                if (prefError) {
+                    console.log('Preferences creation note:', prefError.message);
+                }
+            } catch (prefError) {
+                console.log('Could not create preferences:', prefError);
+            }
+        }
         
         // Success
         showMessage(messageEl, 'Account created! Check your email to verify.', 'success');
