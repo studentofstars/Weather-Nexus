@@ -178,9 +178,6 @@ function createNotificationPanel() {
     panel.innerHTML = `
         <div class="notification-header">
             <h3>Notifications</h3>
-            <button id="test-notification-btn" class="icon-btn" title="Test Notification">
-                <i class="fas fa-vial"></i>
-            </button>
         </div>
         <div id="notification-list" class="notification-list">
             <div class="notification-empty">
@@ -191,9 +188,6 @@ function createNotificationPanel() {
     `;
 
     document.body.appendChild(panel);
-
-    // Add test button listener
-    document.getElementById('test-notification-btn').addEventListener('click', sendTestNotification);
 
     return panel;
 }
