@@ -1527,16 +1527,27 @@ canvas {
     .search-container {
         flex-direction: column;
         gap: 12px;
+        padding: var(--spacing-sm);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .search-wrapper {
+        flex-direction: column;
+        gap: 12px;
     }
     
     .search-input {
         font-size: 16px; /* Prevents zoom on iOS */
+        width: 100%;
+        padding: 12px;
+        text-align: center;
     }
     
     .search-btn {
         width: 100%;
         justify-content: center;
         padding: 14px 24px;
+        font-size: 16px;
     }
     
     .quick-actions {
@@ -1623,6 +1634,16 @@ canvas {
     }
     
     /* Extra small screens optimization */
+    .search-container {
+        padding: 12px;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .search-input {
+        font-size: 16px;
+        padding: 14px 12px;
+    }
+    
     .quick-action-btn {
         font-size: 10px;
         padding: 8px 10px;
@@ -1631,6 +1652,7 @@ canvas {
     
     .search-btn {
         font-size: 14px;
+        padding: 12px 20px;
     }
     
     .live-clock {
