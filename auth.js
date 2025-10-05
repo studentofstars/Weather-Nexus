@@ -47,7 +47,7 @@ async function initAuth() {
 }
 
 // Update UI for logged in user
-function updateUIForLoggedInUser() {
+async function updateUIForLoggedInUser() {
     if (!currentUser) return;
     
     // Hide sign in button
@@ -63,6 +63,35 @@ function updateUIForLoggedInUser() {
     
     document.getElementById('user-name').textContent = userName;
     document.getElementById('user-initials').textContent = initials;
+    
+    // Check if user preferences exist, create if not
+    try {
+        const { data: preferences, error } = await supabase
+            .from('user_preferences')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .single();
+        
+        if (error && error.code === 'PGRST116') {
+            // No preferences found, create them
+            const { error: insertError } = await supabase
+                .from('user_preferences')
+                .insert({
+                    user_id: currentUser.id,
+                    saved_cities: [],
+                    notifications_enabled: true,
+                    email_notifications: true
+                });
+            
+            if (insertError) {
+                console.error('Could not create preferences:', insertError);
+            } else {
+                console.log('User preferences created successfully');
+            }
+        }
+    } catch (err) {
+        console.log('Preferences check:', err.message);
+    }
 }
 
 // Update UI for logged out user
@@ -178,29 +207,7 @@ async function handleSignup(e) {
         
         if (error) throw error;
         
-        // Create user preferences (if signup successful)
-        if (data.user) {
-            try {
-                // Create default preferences
-                const { error: prefError } = await supabase
-                    .from('user_preferences')
-                    .insert({
-                        user_id: data.user.id,
-                        saved_cities: [],
-                        notifications_enabled: true,
-                        email_notifications: true
-                    });
-                
-                // It's okay if this fails (maybe already exists)
-                if (prefError) {
-                    console.log('Preferences creation note:', prefError.message);
-                }
-            } catch (prefError) {
-                console.log('Could not create preferences:', prefError);
-            }
-        }
-        
-        // Success
+        // Success - preferences will be created on first login
         showMessage(messageEl, 'Account created! Check your email to verify.', 'success');
         
         // Switch to login tab after 2 seconds
