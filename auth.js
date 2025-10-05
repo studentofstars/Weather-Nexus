@@ -4,8 +4,9 @@
 const SUPABASE_URL = 'https://hkziikdwbmrnjzeregac.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhremlpa2R3Ym1ybmp6ZXJlZ2FjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NDM5OTQsImV4cCI6MjA3NTIxOTk5NH0.uWH_6nBxXTacx4dDci8JxDEbO0a2_s5tOz8W4ZN4cw4';
 
-// Initialize Supabase client
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Initialize Supabase client (make it globally accessible)
+window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = window.supabaseClient; // Local reference for this file
 
 // UI Elements
 const signInBtn = document.getElementById('sign-in-btn');

@@ -1,22 +1,30 @@
 // Notifications Module
 // Handles notification history, badges, and testing
 
+// Get Supabase client (set by auth.js)
+const getSupabase = () => window.supabaseClient;
+
 // Initialize notification system
 let unreadCount = 0;
 let notificationHistory = [];
 
 async function initNotifications() {
+    const supabase = getSupabase();
     if (!supabase) {
         console.error('Supabase client not available');
         return;
     }
+    
+    console.log('🔔 Initializing notifications module...');
 
     // Get current user session
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-        console.log('No active session');
+        console.log('No active session for notifications');
         return;
     }
+    
+    console.log('✅ Notifications module initialized for user:', session.user.email);
 
     // Load notification history
     await loadNotificationHistory();
@@ -31,6 +39,7 @@ async function initNotifications() {
 // Load notification history from API
 async function loadNotificationHistory() {
     try {
+        const supabase = getSupabase();
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) return;
 
@@ -63,28 +72,30 @@ async function loadNotificationHistory() {
 
 // Subscribe to real-time notification updates
 function subscribeToNotifications() {
-    const { data: { session } } = supabase.auth.getSession();
-    if (!session) return;
+    const supabase = getSupabase();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!session) return;
 
-    // Subscribe to notification_history table changes for current user
-    const subscription = supabase
-        .channel('notifications')
-        .on(
-            'postgres_changes',
-            {
-                event: 'INSERT',
-                schema: 'public',
-                table: 'notification_history',
-                filter: `user_id=eq.${session.user.id}`
-            },
-            (payload) => {
-                console.log('New notification received:', payload);
-                handleNewNotification(payload.new);
-            }
-        )
-        .subscribe();
+        // Subscribe to notification_history table changes for current user
+        const subscription = supabase
+            .channel('notifications')
+            .on(
+                'postgres_changes',
+                {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'notification_history',
+                    filter: `user_id=eq.${session.user.id}`
+                },
+                (payload) => {
+                    console.log('New notification received:', payload);
+                    handleNewNotification(payload.new);
+                }
+            )
+            .subscribe();
 
-    console.log('Subscribed to notifications');
+        console.log('✅ Subscribed to real-time notifications');
+    });
 }
 
 // Handle new notification
@@ -240,6 +251,7 @@ async function markAllAsRead() {
     const unreadNotifications = notificationHistory.filter(n => !n.read_at);
     if (unreadNotifications.length === 0) return;
 
+    const supabase = getSupabase();
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
 
@@ -273,6 +285,7 @@ async function markAllAsRead() {
 // Send test notification
 async function sendTestNotification() {
     try {
+        const supabase = getSupabase();
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
             alert('Please sign in to test notifications');
@@ -326,14 +339,9 @@ window.notificationsModule = {
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        // Will be initialized after auth check in auth.js
+        console.log('📄 DOM loaded, notifications module ready');
     });
 } else {
     // DOM already loaded
-    setTimeout(() => {
-        const session = supabase?.auth?.getSession();
-        if (session) {
-            initNotifications();
-        }
-    }, 1000);
+    console.log('📄 DOM already loaded, notifications module ready');
 }
