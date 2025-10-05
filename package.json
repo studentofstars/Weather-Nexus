@@ -1,0 +1,19 @@
+{
+  "name": "weather-nexus",
+  "version": "1.0.0",
+  "description": "A sleek weather monitoring website for Earth and Space weather with Apple-inspired glassmorphism UI",
+  "main": "index.html",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "resend": "^3.0.0"
+  },
+  "keywords": [
+    "weather",
+    "space-weather",
+    "nasa",
+    "openweathermap",
+    "glassmorphism"
+  ],
+  "author": "",
+  "license": "MIT"
+}
