@@ -1,0 +1,20 @@
+name: Automated Weather Checks
+
+on:
+  schedule:
+    # Run at 10:00 AM IST (4:30 AM UTC)
+    - cron: '30 4 * * *'
+    # Run at 4:00 PM IST (10:30 AM UTC)
+    - cron: '30 10 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  check-weather:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger Weather Check
+        run: |
+          curl -X POST https://weather-monitor-rho.vercel.app/api/check-weather \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json"
